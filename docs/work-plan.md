@@ -361,12 +361,12 @@ refactor(voice): 优化语义切分算法
 - [ ] Task 1.6: Husky + lint-staged 配置 + 提交
 
 ### Phase 2: 配置领域 (2-3天)
-- [ ] Task 2.1: 测试 - UserConfig实体默认创建 + 红测试 + 提交
-- [ ] Task 2.2: 实现 - UserConfig实体默认创建 + 绿测试 + 提交
-- [ ] Task 2.3: 测试 - ShortcutConfig值对象验证 + 提交
-- [ ] Task 2.4: 实现 - ShortcutConfig值对象 + 提交
-- [ ] Task 2.5: 测试 - ConfigService持久化 + 提交
-- [ ] Task 2.6: 实现 - electron-store适配器 + 提交
+- [x] Task 2.1: 测试 - UserConfig实体默认创建 + 红测试 + 提交
+- [x] Task 2.2: 实现 - UserConfig实体默认创建 + 绿测试 + 提交
+- [x] Task 2.3: 测试 - ShortcutConfig值对象验证 + 提交
+- [x] Task 2.4: 实现 - ShortcutConfig值对象 + 提交
+- [x] Task 2.5: 测试 - ConfigService持久化 + 提交
+- [x] Task 2.6: 实现 - electron-store适配器 + 提交
 
 ### Phase 3: 语音领域 - 音频采集 (2-3天)
 - [ ] Task 3.1: 测试 - AudioCaptureService接口 + 提交
