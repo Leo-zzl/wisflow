@@ -11,8 +11,8 @@ export default defineConfig({
       {
         // Main process entry file
         entry: 'electron/main.ts',
-        onstart: (options) => {
-          options.startup();
+        onstart: options => {
+          void options.startup();
         },
         vite: {
           build: {
@@ -28,7 +28,7 @@ export default defineConfig({
       {
         // Preload scripts entry file
         entry: 'electron/preload.ts',
-        onstart: (options) => {
+        onstart: options => {
           options.reload();
         },
         vite: {

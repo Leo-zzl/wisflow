@@ -20,8 +20,21 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@domain/*": ["./src/domain/*"],
+      "@application/*": ["./src/application/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
+      "@presentation/*": ["./src/presentation/*"]
+    }
   },
-  "include": ["vite.config.ts", "electron/main.ts", "tests/**/*.ts"],
+  "include": [
+    "vite.config.ts",
+    "vitest.config.ts",
+    "electron/main.ts",
+    "tests/**/*.ts",
+    "src/**/__tests__/**/*.ts"
+  ],
   "exclude": ["node_modules", "dist", "dist-electron"]
 }

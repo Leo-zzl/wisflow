@@ -110,7 +110,7 @@ describe('AudioCaptureService 接口契约', () => {
       const unsubscribe = service.onChunk(callback);
       unsubscribe();
 
-      const chunk = AudioChunk.create(new Float32Array([0.1, 0.2]), 16000, 0);
+      const _chunk = AudioChunk.create(new Float32Array([0.1, 0.2]), 16000, 0);
       // 验证取消订阅不抛出错误
       expect(() => unsubscribe()).not.toThrow();
     });

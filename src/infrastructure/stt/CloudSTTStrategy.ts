@@ -49,7 +49,7 @@ export class CloudSTTStrategy implements STTStrategy {
     });
   }
 
-  async isAvailable(): Promise<boolean> {
-    return !!(this.config.endpoint && this.config.apiKey);
+  isAvailable(): Promise<boolean> {
+    return Promise.resolve(!!(this.config.endpoint && this.config.apiKey));
   }
 }

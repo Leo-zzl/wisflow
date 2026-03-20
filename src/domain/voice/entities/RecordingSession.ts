@@ -8,7 +8,7 @@ export interface RecordingSessionProps {
 export class RecordingSession {
   readonly id: string;
   private _state: RecordingState;
-  private _chunks: AudioChunk[];
+  private readonly _chunks: AudioChunk[];
   private _startTime: number | null;
   private _endTime: number | null;
 
