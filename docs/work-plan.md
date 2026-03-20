@@ -369,10 +369,10 @@ refactor(voice): 优化语义切分算法
 - [ ] Task 2.6: 实现 - electron-store适配器 + 提交
 
 ### Phase 3: 语音领域 - 音频采集 (2-3天)
-- [ ] Task 3.1: 测试 - AudioCaptureService接口 + 提交
-- [ ] Task 3.2: 实现 - WebAudio适配器 + 提交
-- [ ] Task 3.3: 测试 - RecordingSession聚合根 + 提交
-- [ ] Task 3.4: 实现 - RecordingSession + 提交
+- [x] Task 3.1: 测试 - AudioCaptureService接口 + 提交
+- [x] Task 3.2: 实现 - WebAudio适配器 + 提交
+- [x] Task 3.3: 测试 - RecordingSession聚合根 + 提交
+- [x] Task 3.4: 实现 - RecordingSession + 提交
 
 ### Phase 4: 语音领域 - VAD与语义切分 (3-4天)
 - [ ] Task 4.1: 测试 - VADService语义边界检测 + 提交
