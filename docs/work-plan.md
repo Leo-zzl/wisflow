@@ -410,11 +410,11 @@ refactor(voice): 优化语义切分算法
 
 ### Phase 6: 执行领域 - 剪贴板 (2-3天)
 
-- [ ] Task 6.1: 测试 - ClipboardService接口 + 提交
-- [ ] Task 6.2: 实现 - Windows剪贴板适配器 + 提交
-- [ ] Task 6.3: 测试 - PasterService增量粘贴 + 提交
-- [ ] Task 6.4: 实现 - PasterService + 提交
-- [ ] Task 6.5: 测试 - 剪贴板临时保存/恢复 + 提交
+- [x] Task 6.1: 测试 - ClipboardService接口 + 提交
+- [x] Task 6.2: 实现 - Windows剪贴板适配器 + 提交
+- [x] Task 6.3: 测试 - PasterService增量粘贴 + 提交
+- [x] Task 6.4: 实现 - PasterService + 提交
+- [x] Task 6.5: 测试 - 剪贴板临时保存/恢复 + 提交
 
 ### Phase 7: 内容领域 - 润色 (2-3天)
 
