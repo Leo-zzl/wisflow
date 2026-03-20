@@ -1,14 +1,18 @@
-import type { ContentSession } from '../entities/ContentSession';
+import { ContentSession } from '../entities/ContentSession';
 import type { PolishPort, PolishConfig } from '../ports/PolishPort';
 
 export class PolishService {
   constructor(private readonly port: PolishPort) {}
 
-  isAvailable(): Promise<boolean> {
-    return Promise.reject(new Error('Not implemented'));
+  async isAvailable(): Promise<boolean> {
+    return this.port.isAvailable();
   }
 
-  polish(_session: ContentSession, _config?: PolishConfig): Promise<ContentSession> {
-    return Promise.reject(new Error('Not implemented'));
+  async polish(session: ContentSession, config?: PolishConfig): Promise<ContentSession> {
+    if (!(await this.port.isAvailable())) {
+      throw new Error('润色服务不可用');
+    }
+    const polished = await this.port.polish(session.rawText, session.polishStyle, config);
+    return session.setPolishedText(polished);
   }
 }
