@@ -1,189 +1,73 @@
-# WisFlow / 微声流
+# React + TypeScript + Vite
 
-A Windows 11 voice input assistant built with React + Electron. Speak naturally, and it types for you.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-> **Wis** = Whisper (AI speech recognition) + **Flow** (seamless input flow)  
-> **微声流** = 细微的声音，流畅地流动
+Currently, two official plugins are available:
 
-## Architecture Overview
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Main Process (Node.js)                    │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
-│  │   Tray   │  │ Shortcut │  │ System   │  │ Keyboard │    │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
-└─────────────────────────────────────────────────────────────┘
-                              │ IPC
-┌─────────────────────────────────────────────────────────────┐
-│                   Renderer Process (React)                   │
-│                                                             │
-│   ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    │
-│   │   Voice     │───→│    Agent    │───→│   Action    │    │
-│   │    Layer    │    │    Layer    │    │    Layer    │    │
-│   │             │    │             │    │             │    │
-│   │ • Capture   │    │ • Intent    │    │ • Paste     │    │
-│   │ • STT       │    │ • LLM       │    │ • Keys      │    │
-│   │ • VAD       │    │ • Decision  │    │ • System    │    │
-│   └─────────────┘    └─────────────┘    └─────────────┘    │
-└─────────────────────────────────────────────────────────────┘
-```
+## React Compiler
 
-## Three-Layer Design
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-### 1. Voice Layer
-Handles audio capture and speech-to-text conversion.
+## Expanding the ESLint configuration
 
-**Responsibilities:**
-- Start/stop recording via global shortcut
-- Voice Activity Detection (VAD) - auto-stop on silence
-- Audio format conversion
-- STT API calls (Whisper / Azure / Xunfei)
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-**Key Components:**
-- `VoicePanel` - Visual recording interface
-- `useAudioRecorder` - Recording logic hook
-- `sttService` - Speech-to-text service
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-### 2. Agent Layer
-The brain. Decides what to do with the transcribed text.
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-**Responsibilities:**
-- Parse user intent
-- Route to appropriate handler
-- Call LLM when needed
-- Manage conversation context
-
-**Intent Types:**
-| Intent | Action | Example |
-|--------|--------|---------|
-| `DIRECT_PASTE` | Paste text as-is | "Type: Hello world" |
-| `LLM_PROCESS` | Send to LLM, then paste | "Write a thank you email to my boss" |
-| `COMMAND` | Execute system command | "Open Chrome" / "Search for React docs" |
-
-**Key Components:**
-- `AgentCore` - Central decision engine
-- `intentEngine` - Rule-based + LLM intent detection
-- `useLLM` - LLM service integration
-
-### 3. Action Layer (The Paster)
-Executes the final action on the system.
-
-**Responsibilities:**
-- Simulate keyboard input
-- Paste to cursor position
-- Execute system commands
-- Provide execution feedback
-
-**Key Components:**
-- `usePaster` - Text pasting hook
-- `nativeBridge` - IPC to main process
-- `ActionFeedback` - Visual feedback UI
-
-## Data Flow
-
-```
-User presses hotkey (e.g., Ctrl+Shift+V)
-         │
-         ▼
-┌─────────────────┐
-│  Voice Layer    │ ──→ Show recording UI, capture audio
-│                 │ ──→ Auto-stop on silence
-└────────┬────────┘
-         │ audioBlob
-         ▼
-┌─────────────────┐
-│  Agent Layer    │ ──→ STT: Convert audio to text
-│                 │ ──→ Intent: Decide what to do
-│                 │ ──→ LLM: Process if needed
-└────────┬────────┘
-         │ intent + payload
-         ▼
-┌─────────────────┐
-│  Action Layer   │ ──→ Paste text at cursor
-│                 │ ──→ Or execute command
-└─────────────────┘
-         │
-         ▼
-   Text appears in active window
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-## Tech Stack
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-| Layer | Technology |
-|-------|------------|
-| Desktop Framework | Electron |
-| Frontend | React + TypeScript |
-| State Management | Zustand |
-| Styling | Tailwind CSS |
-| STT | Whisper (local) / Azure Speech |
-| LLM | OpenAI API / Claude / Ollama (local) |
-| Input Simulation | @nut-tree/nut-js |
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-## Project Structure
-
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-wisflow/
-├── electron/               # Main process
-│   ├── main.ts
-│   ├── preload.ts         # IPC bridge
-│   └── modules/
-│       ├── audioCapture.ts
-│       ├── globalShortcut.ts
-│       ├── systemTray.ts
-│       └── nativePaster.ts
-│
-├── src/
-│   ├── features/
-│   │   ├── voice/         # Voice Layer
-│   │   │   ├── components/
-│   │   │   ├── hooks/
-│   │   │   └── services/
-│   │   │
-│   │   ├── agent/         # Agent Layer
-│   │   │   ├── components/
-│   │   │   ├── hooks/
-│   │   │   └── services/
-│   │   │
-│   │   └── action/        # Action Layer
-│   │       ├── components/
-│   │       ├── hooks/
-│   │       └── services/
-│   │
-│   ├── store/             # Global state
-│   ├── shared/            # Shared utilities
-│   └── App.tsx
-│
-└── package.json
-```
-
-## Name Origin
-
-| Name | Meaning |
-|------|---------|
-| **WisFlow** | **Wis** (Whisper AI + Wisdom) + **Flow** (effortless input flow) |
-| **微声流** | 细微的声音如流水般自然输入，微言大义，声入心流 |
-
-The name captures two essences:
-1. **Technology** — Built on OpenAI Whisper for speech recognition
-2. **Experience** — Voice flows into text as naturally as water
-
-## Key Features
-
-1. **Global Hotkey** - Trigger from anywhere with custom shortcut
-2. **Floating UI** - Compact overlay when recording
-3. **Auto-paste** - Text goes directly to cursor position
-4. **LLM Integration** - Ask it to rewrite, translate, or generate text
-5. **Privacy Mode** - Local Whisper for offline usage
-
-## Next Steps
-
-1. Initialize project with `npm create electron-vite`
-2. Set up IPC bridge between main and renderer
-3. Implement voice capture with VAD
-4. Build the Agent decision engine
-5. Add native keyboard simulation
-
----
-
-Built for Windows 11 | React + Electron
