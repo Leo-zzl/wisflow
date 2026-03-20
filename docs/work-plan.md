@@ -375,11 +375,11 @@ refactor(voice): 优化语义切分算法
 - [x] Task 3.4: 实现 - RecordingSession + 提交
 
 ### Phase 4: 语音领域 - VAD与语义切分 (3-4天)
-- [ ] Task 4.1: 测试 - VADService语义边界检测 + 提交
-- [ ] Task 4.2: 实现 - Silero VAD集成 + 提交
-- [ ] Task 4.3: 测试 - SemanticChunkDetector(10字阈值) + 提交
-- [ ] Task 4.4: 实现 - SemanticChunkDetector + 提交
-- [ ] Task 4.5: 集成测试 - 录音+切分流程 + 提交
+- [x] Task 4.1: 测试 - VADService语义边界检测 + 提交
+- [x] Task 4.2: 实现 - Silero VAD集成 + 提交
+- [x] Task 4.3: 测试 - SemanticChunkDetector(10字阈值) + 提交
+- [x] Task 4.4: 实现 - SemanticChunkDetector + 提交
+- [x] Task 4.5: 集成测试 - 录音+切分流程 + 提交
 
 ### Phase 5: 模型领域 - STT抽象 (3-4天)
 - [ ] Task 5.1: 测试 - ModelRegistry接口 + 提交
