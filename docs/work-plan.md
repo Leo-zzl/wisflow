@@ -418,11 +418,11 @@ refactor(voice): 优化语义切分算法
 
 ### Phase 7: 内容领域 - 润色 (2-3天)
 
-- [ ] Task 7.1: 测试 - PolishStyle枚举 + 提交
-- [ ] Task 7.2: 测试 - ContentSession聚合根 + 提交
-- [ ] Task 7.3: 实现 - ContentSession + 提交
-- [ ] Task 7.4: 测试 - PolishService多风格润色 + 提交
-- [ ] Task 7.5: 实现 - LLM调用集成 + 提交
+- [x] Task 7.1: 测试 - PolishStyle枚举 + 提交
+- [x] Task 7.2: 测试 - ContentSession聚合根 + 提交
+- [x] Task 7.3: 实现 - ContentSession + 提交
+- [x] Task 7.4: 测试 - PolishService多风格润色 + 提交
+- [x] Task 7.5: 实现 - LLM调用集成 + 提交
 
 ### Phase 8: 应用层编排 (2-3天)
 
