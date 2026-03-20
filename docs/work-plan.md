@@ -3,45 +3,51 @@
 ## 1. 技术选型与框架版本
 
 ### 核心框架
-| 技术 | 版本 | 说明 |
-|------|------|------|
-| Electron | ^28.x | 桌面应用框架 |
-| React | ^18.x | UI框架 |
-| TypeScript | ^5.x | 类型系统（严格模式） |
-| Vite | ^5.x | 构建工具（electron-vite） |
+
+| 技术       | 版本  | 说明                      |
+| ---------- | ----- | ------------------------- |
+| Electron   | ^28.x | 桌面应用框架              |
+| React      | ^18.x | UI框架                    |
+| TypeScript | ^5.x  | 类型系统（严格模式）      |
+| Vite       | ^5.x  | 构建工具（electron-vite） |
 
 ### 测试与质量
-| 技术 | 版本 | 说明 |
-|------|------|------|
-| Vitest | ^1.x | 单元/集成测试框架 |
-| Playwright | ^1.x | E2E测试框架 |
-| @testing-library/react | ^14.x | React组件测试 |
-| ESLint | ^8.x | 代码检查 |
-| Prettier | ^3.x | 代码格式化 |
+
+| 技术                   | 版本  | 说明              |
+| ---------------------- | ----- | ----------------- |
+| Vitest                 | ^1.x  | 单元/集成测试框架 |
+| Playwright             | ^1.x  | E2E测试框架       |
+| @testing-library/react | ^14.x | React组件测试     |
+| ESLint                 | ^8.x  | 代码检查          |
+| Prettier               | ^3.x  | 代码格式化        |
 
 ### 状态与样式
-| 技术 | 版本 | 说明 |
-|------|------|------|
-| Zustand | ^4.x | 状态管理 |
-| Tailwind CSS | ^3.x | CSS框架 |
+
+| 技术           | 版本 | 说明       |
+| -------------- | ---- | ---------- |
+| Zustand        | ^4.x | 状态管理   |
+| Tailwind CSS   | ^3.x | CSS框架    |
 | electron-store | ^8.x | 配置持久化 |
 
 ### 语音与AI
-| 技术 | 版本 | 说明 |
-|------|------|------|
-| @ricky0123/vad | latest | Silero VAD (浏览器) |
-| faster-whisper | (Python) | 本地STT |
+
+| 技术           | 版本     | 说明                |
+| -------------- | -------- | ------------------- |
+| @ricky0123/vad | latest   | Silero VAD (浏览器) |
+| faster-whisper | (Python) | 本地STT             |
 
 ---
 
 ## 2. TDD 开发流程规范
 
 ### 开发循环
+
 ```
 1. 写测试 → 2. 运行测试(红) → 3. 写实现 → 4. 运行测试(绿) → 5. 重构 → 6. 提交
 ```
 
 ### 测试金字塔
+
 ```
      /\
     /  \  E2E测试 (Playwright) - 关键用户流程
@@ -55,6 +61,7 @@
 ```
 
 ### 测试文件命名
+
 ```
 领域文件: src/domain/config/entities/UserConfig.ts
 测试文件: src/domain/config/entities/__tests__/UserConfig.spec.ts
@@ -64,6 +71,7 @@
 ```
 
 ### 测试原则
+
 1. **FIRST原则**: Fast(快), Independent(独立), Repeatable(可重复), Self-validating(自验证), Timely(及时)
 2. **一个测试一个概念**: 每个测试只验证一个行为
 3. **AAA模式**: Arrange(准备) → Act(执行) → Assert(断言)
@@ -73,6 +81,7 @@
 ## 3. 模块拆分与依赖关系
 
 ### 模块依赖图
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                     Presentation (UI层)                        │
@@ -106,6 +115,7 @@
 ```
 
 ### 领域间依赖规则
+
 1. **同层不依赖**: 各 Domain 之间不直接依赖，通过 Application 编排
 2. **上层依赖下层**: Application → Domain → Infrastructure
 3. **依赖抽象**: 上层依赖接口，下层实现接口
@@ -118,6 +128,7 @@
 ### 单元测试 (Vitest)
 
 #### 领域对象测试
+
 ```typescript
 // UserConfig.spec.ts
 describe('UserConfig', () => {
@@ -147,6 +158,7 @@ describe('UserConfig', () => {
 ```
 
 #### 领域服务测试
+
 ```typescript
 // SemanticChunkDetector.spec.ts
 describe('SemanticChunkDetector', () => {
@@ -217,8 +229,7 @@ test('按住快捷键语音输入并自动粘贴', async ({ page }) => {
   await page.keyboard.down('V');
 
   // 等待录音界面出现
-  await expect(page.locator('[data-testid="recording-panel"]'))
-    .toBeVisible();
+  await expect(page.locator('[data-testid="recording-panel"]')).toBeVisible();
 
   // 模拟语音输入（通过测试API）
   await page.evaluate(() => {
@@ -231,8 +242,7 @@ test('按住快捷键语音输入并自动粘贴', async ({ page }) => {
   await page.keyboard.up('Control');
 
   // 验证文本被粘贴
-  await expect(page.locator('#editor'))
-    .toHaveText(/今天天气/);
+  await expect(page.locator('#editor')).toHaveText(/今天天气/);
 });
 ```
 
@@ -241,6 +251,7 @@ test('按住快捷键语音输入并自动粘贴', async ({ page }) => {
 ## 5. 质量检查配置
 
 ### ESLint 规则
+
 ```json
 {
   "extends": [
@@ -258,6 +269,7 @@ test('按住快捷键语音输入并自动粘贴', async ({ page }) => {
 ```
 
 ### TypeScript 严格模式
+
 ```json
 {
   "compilerOptions": {
@@ -274,6 +286,7 @@ test('按住快捷键语音输入并自动粘贴', async ({ page }) => {
 ```
 
 ### Prettier 配置
+
 ```json
 {
   "semi": true,
@@ -285,14 +298,11 @@ test('按住快捷键语音输入并自动粘贴', async ({ page }) => {
 ```
 
 ### 预提交检查 (Husky + lint-staged)
+
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write",
-      "vitest related --run"
-    ]
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write", "vitest related --run"]
   }
 }
 ```
@@ -302,6 +312,7 @@ test('按住快捷键语音输入并自动粘贴', async ({ page }) => {
 ## 6. Git 提交规范
 
 ### 提交信息格式
+
 ```
 <type>(<scope>): <subject>
 
@@ -311,16 +322,18 @@ test('按住快捷键语音输入并自动粘贴', async ({ page }) => {
 ```
 
 ### 类型 (Type)
-| 类型 | 说明 |
-|------|------|
-| feat | 新功能 |
-| fix | Bug修复 |
-| test | 测试相关 |
-| refactor | 重构（非功能变更）|
-| docs | 文档 |
-| chore | 构建/工具/依赖 |
+
+| 类型     | 说明               |
+| -------- | ------------------ |
+| feat     | 新功能             |
+| fix      | Bug修复            |
+| test     | 测试相关           |
+| refactor | 重构（非功能变更） |
+| docs     | 文档               |
+| chore    | 构建/工具/依赖     |
 
 ### 范围 (Scope)
+
 - config: 配置领域
 - voice: 语音领域
 - model: 模型领域
@@ -329,6 +342,7 @@ test('按住快捷键语音输入并自动粘贴', async ({ page }) => {
 - infra: 基础设施
 
 ### 示例
+
 ```
 feat(config): 实现用户配置聚合根
 
@@ -353,14 +367,16 @@ refactor(voice): 优化语义切分算法
 ## 7. 开发阶段任务清单
 
 ### Phase 1: 项目初始化 (2-3天)
-- [ ] Task 1.1: electron-vite 项目初始化 + Git提交
-- [ ] Task 1.2: ESLint + Prettier + TypeScript严格模式配置 + 提交
-- [ ] Task 1.3: Vitest 测试框架配置 + 提交
-- [ ] Task 1.4: Tailwind CSS + Zustand 配置 + 提交
-- [ ] Task 1.5: DDD目录结构创建 + 提交
-- [ ] Task 1.6: Husky + lint-staged 配置 + 提交
+
+- [x] Task 1.1: electron-vite 项目初始化 + Git提交
+- [x] Task 1.2: ESLint + Prettier + TypeScript严格模式配置 + 提交
+- [x] Task 1.3: Vitest 测试框架配置 + 提交
+- [x] Task 1.4: Tailwind CSS + Zustand 配置 + 提交
+- [x] Task 1.5: DDD目录结构创建 + 提交
+- [x] Task 1.6: Husky + lint-staged 配置 + 提交
 
 ### Phase 2: 配置领域 (2-3天)
+
 - [x] Task 2.1: 测试 - UserConfig实体默认创建 + 红测试 + 提交
 - [x] Task 2.2: 实现 - UserConfig实体默认创建 + 绿测试 + 提交
 - [x] Task 2.3: 测试 - ShortcutConfig值对象验证 + 提交
@@ -369,12 +385,14 @@ refactor(voice): 优化语义切分算法
 - [x] Task 2.6: 实现 - electron-store适配器 + 提交
 
 ### Phase 3: 语音领域 - 音频采集 (2-3天)
+
 - [x] Task 3.1: 测试 - AudioCaptureService接口 + 提交
 - [x] Task 3.2: 实现 - WebAudio适配器 + 提交
 - [x] Task 3.3: 测试 - RecordingSession聚合根 + 提交
 - [x] Task 3.4: 实现 - RecordingSession + 提交
 
 ### Phase 4: 语音领域 - VAD与语义切分 (3-4天)
+
 - [x] Task 4.1: 测试 - VADService语义边界检测 + 提交
 - [x] Task 4.2: 实现 - Silero VAD集成 + 提交
 - [x] Task 4.3: 测试 - SemanticChunkDetector(10字阈值) + 提交
@@ -382,6 +400,7 @@ refactor(voice): 优化语义切分算法
 - [x] Task 4.5: 集成测试 - 录音+切分流程 + 提交
 
 ### Phase 5: 模型领域 - STT抽象 (3-4天)
+
 - [x] Task 5.1: 测试 - ModelRegistry接口 + 提交
 - [x] Task 5.2: 实现 - ModelRegistry + 提交
 - [x] Task 5.3: 测试 - CloudSTT策略 + 提交
@@ -390,6 +409,7 @@ refactor(voice): 优化语义切分算法
 - [x] Task 5.6: 实现 - faster-whisper集成 + 提交
 
 ### Phase 6: 执行领域 - 剪贴板 (2-3天)
+
 - [ ] Task 6.1: 测试 - ClipboardService接口 + 提交
 - [ ] Task 6.2: 实现 - Windows剪贴板适配器 + 提交
 - [ ] Task 6.3: 测试 - PasterService增量粘贴 + 提交
@@ -397,6 +417,7 @@ refactor(voice): 优化语义切分算法
 - [ ] Task 6.5: 测试 - 剪贴板临时保存/恢复 + 提交
 
 ### Phase 7: 内容领域 - 润色 (2-3天)
+
 - [ ] Task 7.1: 测试 - PolishStyle枚举 + 提交
 - [ ] Task 7.2: 测试 - ContentSession聚合根 + 提交
 - [ ] Task 7.3: 实现 - ContentSession + 提交
@@ -404,12 +425,14 @@ refactor(voice): 优化语义切分算法
 - [ ] Task 7.5: 实现 - LLM调用集成 + 提交
 
 ### Phase 8: 应用层编排 (2-3天)
+
 - [ ] Task 8.1: 测试 - VoiceInputOrchestrator按住模式 + 提交
 - [ ] Task 8.2: 实现 - VoiceInputOrchestrator + 提交
 - [ ] Task 8.3: 测试 - VoiceInputOrchestrator切换模式 + 提交
 - [ ] Task 8.4: 集成测试 - 完整流程 + 提交
 
 ### Phase 9: UI层与集成 (3-4天)
+
 - [ ] Task 9.1: 设置面板UI + 提交
 - [ ] Task 9.2: 录音浮动框UI + 提交
 - [ ] Task 9.3: 系统托盘集成 + 提交
@@ -477,6 +500,7 @@ wisflow/
 ## 9. 质量门禁
 
 每个提交必须通过：
+
 1. ✅ TypeScript 编译无错误
 2. ✅ ESLint 无错误
 3. ✅ Prettier 格式化
@@ -487,13 +511,13 @@ wisflow/
 
 ## 10. 风险与应对
 
-| 风险 | 应对策略 |
-|------|----------|
-| Silero VAD 浏览器兼容 | 准备 fallback VAD 方案 |
-| faster-whisper 性能 | 初期用云端API，后期优化 |
-| Windows API 权限 | 提供管理员权限安装选项 |
-| 剪贴板冲突 | 实现临时保存/恢复机制 |
-| 快捷键冲突 | 配置界面检测并提示 |
+| 风险                  | 应对策略                |
+| --------------------- | ----------------------- |
+| Silero VAD 浏览器兼容 | 准备 fallback VAD 方案  |
+| faster-whisper 性能   | 初期用云端API，后期优化 |
+| Windows API 权限      | 提供管理员权限安装选项  |
+| 剪贴板冲突            | 实现临时保存/恢复机制   |
+| 快捷键冲突            | 配置界面检测并提示      |
 
 ---
 
@@ -524,6 +548,6 @@ npm run format:check
 
 ---
 
-*文档版本: 1.0*
-*创建时间: 2026-03-20*
-*更新周期: 每周回顾更新*
+_文档版本: 1.0_
+_创建时间: 2026-03-20_
+_更新周期: 每周回顾更新_
