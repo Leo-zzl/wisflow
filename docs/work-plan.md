@@ -382,12 +382,12 @@ refactor(voice): 优化语义切分算法
 - [ ] Task 4.5: 集成测试 - 录音+切分流程 + 提交
 
 ### Phase 5: 模型领域 - STT抽象 (3-4天)
-- [ ] Task 5.1: 测试 - ModelRegistry接口 + 提交
-- [ ] Task 5.2: 实现 - ModelRegistry + 提交
-- [ ] Task 5.3: 测试 - CloudSTT策略 + 提交
-- [ ] Task 5.4: 实现 - OpenAI兼容接口适配器 + 提交
-- [ ] Task 5.5: 测试 - LocalWhisper策略 + 提交
-- [ ] Task 5.6: 实现 - faster-whisper集成 + 提交
+- [x] Task 5.1: 测试 - ModelRegistry接口 + 提交
+- [x] Task 5.2: 实现 - ModelRegistry + 提交
+- [x] Task 5.3: 测试 - CloudSTT策略 + 提交
+- [x] Task 5.4: 实现 - OpenAI兼容接口适配器 + 提交
+- [x] Task 5.5: 测试 - LocalWhisper策略 + 提交
+- [x] Task 5.6: 实现 - faster-whisper集成 + 提交
 
 ### Phase 6: 执行领域 - 剪贴板 (2-3天)
 - [ ] Task 6.1: 测试 - ClipboardService接口 + 提交
