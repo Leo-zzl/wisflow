@@ -548,6 +548,54 @@ npm run format:check
 
 ---
 
+## 12. 待明确事项（Phase 7-9 开发前需确认）
+
+### Phase 7 - 内容领域（润色）
+
+- **Q1: PolishStyle 是否迁移为枚举？**
+  `PolishStyle` 已在 `UserConfig.ts` 中定义为 type。Task 7.1 是将其迁移到 `src/domain/content/value-objects/PolishStyle.ts` 作为独立枚举，还是直接复用现有 type？
+
+  > 建议：迁移为独立枚举，由 content 领域拥有，UserConfig 通过 import 引用，保持 DDD 边界清晰。
+
+- **Q2: LLM 接口选型？**
+  Task 7.5 LLM 调用集成使用哪个服务？是 OpenAI 兼容接口（与 CloudSTTStrategy 同模式），还是有指定的本地/云端 LLM？
+
+  > 建议：采用 OpenAI 兼容接口（`/v1/chat/completions`），由 `endpoint` + `apiKey` 配置驱动，与 STT 策略保持一致的抽象模式。
+
+- **Q3: ContentSession 职责边界？**
+  `ContentSession` 聚合根应持有哪些状态？
+  > 建议：持有 `rawText`（原始转写）、`polishedText`（润色结果）、`polishStyle`、`sessionId`、`createdAt`，支持不可变更新。
+
+### Phase 8 - 应用层编排
+
+- **Q4: VoiceInputOrchestrator 流程确认？**
+  按住模式预期流程是否如下？
+
+  ```
+  快捷键按下 → 保存剪贴板快照 → 开始录音
+    → [语义块就绪] → STT 转写 → (autoPolish?) → 增量粘贴
+  快捷键松开 → 停止录音 → 处理剩余音频 → 恢复剪贴板
+  ```
+
+- **Q5: 切换模式（toggle）与按住模式（hold）的区别？**
+
+  > 建议：hold = 按住期间录音，松开停止；toggle = 第一次按下开始，第二次按下停止。两种模式共用同一个编排器，由 `ShortcutConfig.mode` 决定行为分支。
+
+- **Q6: 润色是否阻塞粘贴？**
+  `autoPolish = true` 时，是等润色完成再粘贴，还是先粘贴原文再异步替换？
+  > 建议：先增量粘贴原文（低延迟），润色完成后若文本有变化再追加/替换（需要光标定位能力，可作为后续优化）。
+
+### Phase 9 - UI 层
+
+- **Q7: 录音浮动框是独立 Electron 窗口还是 React 组件？**
+
+  > 建议：独立的 `BrowserWindow`（`alwaysOnTop: true`，无边框），避免与用户当前输入窗口产生焦点竞争。
+
+- **Q8: 设置面板是独立窗口还是主窗口内路由？**
+  > 建议：独立窗口，由托盘图标右键菜单触发打开。
+
+---
+
 _文档版本: 1.0_
 _创建时间: 2026-03-20_
 _更新周期: 每周回顾更新_
