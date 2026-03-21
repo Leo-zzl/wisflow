@@ -9,10 +9,9 @@ interface RecordingState {
   finishProcessing: () => void;
 }
 
-// Stub — implementation intentionally left empty for red TDD state
-export const useRecordingStore = create<RecordingState>(() => ({
+export const useRecordingStore = create<RecordingState>(set => ({
   status: 'idle',
-  startRecording: () => {},
-  startProcessing: () => {},
-  finishProcessing: () => {},
+  startRecording: () => set({ status: 'recording' }),
+  startProcessing: () => set({ status: 'processing' }),
+  finishProcessing: () => set({ status: 'idle' }),
 }));
