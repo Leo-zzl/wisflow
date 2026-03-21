@@ -21,7 +21,7 @@ describe('设置面板', () => {
 
       // waitFor：等待 useEffect 中的异步加载完成（默认配置与加载结果相同）
       await waitFor(() => {
-        expect(screen.getByText('Ctrl+Shift+V')).toBeInTheDocument();
+        expect(screen.getByTestId('shortcut-capture-area')).toHaveTextContent('Ctrl+Shift+V');
       });
     });
 
@@ -51,7 +51,7 @@ describe('设置面板', () => {
       render(<SettingsPanel repo={repo} />);
 
       // 加载失败时 useEffect 不调用 setConfig，保留初始默认值
-      expect(screen.getByText('Ctrl+Shift+V')).toBeInTheDocument();
+      expect(screen.getByTestId('shortcut-capture-area')).toHaveTextContent('Ctrl+Shift+V');
     });
   });
 
