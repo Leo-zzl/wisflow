@@ -9,6 +9,17 @@ import {
 } from '@domain/voice/services/AudioCaptureService';
 import { AudioChunk } from '@domain/voice/value-objects/AudioChunk';
 
+/** 可注入的 Tauri 事件总线接口，便于单元测试 */
+export interface TauriEventBus {
+  listen<T>(event: string, handler: (event: { payload: T }) => void): Promise<() => void>;
+}
+
+/** 可注入的 Tauri invoke 接口，便于单元测试 */
+export interface TauriAudioInvoker {
+  startCapture(sampleRate: number, channels: number, chunkDurationMs: number): Promise<void>;
+  stopCapture(): Promise<void>;
+}
+
 /**
  * Tauri 音频采集适配器
  * 实现 AudioCaptureService，通过 Rust cpal 采集麦克风音频
@@ -20,6 +31,11 @@ export class TauriAudioCaptureAdapter implements AudioCaptureService {
   private paused = false;
   private readonly callbacks = new Set<ChunkCallback>();
   private unlistenAudioChunk: UnlistenFn | null = null;
+
+  constructor(
+    private readonly _eventBus?: TauriEventBus,
+    private readonly _invoker?: TauriAudioInvoker
+  ) {}
 
   async startCapture(config?: Partial<AudioCaptureConfig>): Promise<void> {
     if (this.capturing) return;
