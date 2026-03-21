@@ -8,11 +8,23 @@ import {
 } from '@domain/config/entities/UserConfig';
 import { ShortcutConfig, ShortcutConfigProps } from '@domain/config/value-objects/ShortcutConfig';
 
-interface PersistedConfig {
+export interface PersistedConfig {
   shortcut: ShortcutConfigProps;
   modelPolicy: ModelPolicy;
   polish: PolishConfig;
   ui: UIConfig;
+}
+
+/** 可注入的 Tauri store 实例接口，便于单元测试 */
+export interface TauriStoreInstance {
+  get<T>(key: string): Promise<T | null | undefined>;
+  set(key: string, value: unknown): Promise<void>;
+  save(): Promise<void>;
+}
+
+/** 可注入的 store 加载器接口，便于单元测试 */
+export interface TauriStoreLoader {
+  load(path: string, options?: { autoSave?: boolean }): Promise<TauriStoreInstance>;
 }
 
 const STORE_FILE = 'wisflow-config.json';
@@ -20,9 +32,12 @@ const CONFIG_KEY = 'userConfig';
 
 /**
  * Tauri 配置仓库
- * 实现 ConfigRepository，使用 @tauri-apps/plugin-store 替代 electron-store
+ * 实现 ConfigRepository，使用 @tauri-apps/plugin-store 替代 electron-store。
+ * 接受可注入的 TauriStoreLoader，生产时使用默认实现，测试时注入 mock。
  */
 export class TauriStoreConfigRepository implements ConfigRepository {
+  constructor(private readonly _storeLoader?: TauriStoreLoader) {}
+
   async load(): Promise<UserConfig | null> {
     const store = await load(STORE_FILE, { autoSave: false });
     const raw = await store.get<PersistedConfig>(CONFIG_KEY);
