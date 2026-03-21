@@ -1,4 +1,6 @@
-import type { listen } from '@tauri-apps/api/event';
+import { useEffect } from 'react';
+import { listen } from '@tauri-apps/api/event';
+import { useRecordingStore } from '../stores/recordingStore';
 
 export interface OrchestratorFacade {
   onShortcutPressed(): Promise<void>;
@@ -7,10 +9,33 @@ export interface OrchestratorFacade {
 
 export type ListenFn = typeof listen;
 
-// Stub — intentionally incomplete for red TDD state
+const defaultListen: ListenFn = listen;
+
 export function useOrchestrator(
-  _orchestrator: OrchestratorFacade,
-  _listenFn: ListenFn = listen
+  orchestrator: OrchestratorFacade,
+  listenFn: ListenFn = defaultListen
 ): void {
-  // no-op
+  const { startRecording, startProcessing, finishProcessing } = useRecordingStore();
+
+  useEffect(() => {
+    const handlePressed = (): void => {
+      startRecording();
+      void orchestrator.onShortcutPressed();
+    };
+
+    const handleReleased = (): void => {
+      startProcessing();
+      void orchestrator.onShortcutReleased().then(() => {
+        finishProcessing();
+      });
+    };
+
+    const unsubPressed = listenFn('shortcut-pressed', handlePressed);
+    const unsubReleased = listenFn('shortcut-released', handleReleased);
+
+    return (): void => {
+      void unsubPressed.then(fn => fn());
+      void unsubReleased.then(fn => fn());
+    };
+  }, [orchestrator, listenFn, startRecording, startProcessing, finishProcessing]);
 }
