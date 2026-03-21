@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import { listen, UnlistenFn } from '@tauri-apps/api/event';
+import { listen } from '@tauri-apps/api/event';
 import {
   AudioCaptureService,
   AudioCaptureConfig,
@@ -20,22 +20,41 @@ export interface TauriAudioInvoker {
   stopCapture(): Promise<void>;
 }
 
+// 默认生产事件总线：直接调用 @tauri-apps/api/event
+const defaultEventBus: TauriEventBus = {
+  listen: <T>(event: string, handler: (e: { payload: T }) => void) => listen<T>(event, handler),
+};
+
+// 默认生产 invoker：直接调用 Tauri invoke
+const defaultInvoker: TauriAudioInvoker = {
+  startCapture: (sampleRate, channels, chunkDurationMs) =>
+    invoke<void>('start_audio_capture', { sampleRate, channels, chunkDurationMs }),
+  stopCapture: () => invoke<void>('stop_audio_capture'),
+};
+
 /**
  * Tauri 音频采集适配器
- * 实现 AudioCaptureService，通过 Rust cpal 采集麦克风音频
- * Rust 侧通过 Tauri event 推送 PCM 数据块到前端
+ * 实现 AudioCaptureService，通过 Rust cpal 采集麦克风音频。
+ * Rust 侧通过 Tauri event 推送 PCM 数据块到前端。
+ * 接受可注入依赖，生产时使用默认实现，测试时注入 mock。
  */
 export class TauriAudioCaptureAdapter implements AudioCaptureService {
   private config: AudioCaptureConfig = { ...DEFAULT_CAPTURE_CONFIG };
   private capturing = false;
   private paused = false;
   private readonly callbacks = new Set<ChunkCallback>();
-  private unlistenAudioChunk: UnlistenFn | null = null;
+  private unlistenAudioChunk: (() => void) | null = null;
+
+  private readonly eventBus: TauriEventBus;
+  private readonly invoker: TauriAudioInvoker;
 
   constructor(
-    private readonly _eventBus?: TauriEventBus,
-    private readonly _invoker?: TauriAudioInvoker
-  ) {}
+    eventBus: TauriEventBus = defaultEventBus,
+    invoker: TauriAudioInvoker = defaultInvoker
+  ) {
+    this.eventBus = eventBus;
+    this.invoker = invoker;
+  }
 
   async startCapture(config?: Partial<AudioCaptureConfig>): Promise<void> {
     if (this.capturing) return;
@@ -45,7 +64,7 @@ export class TauriAudioCaptureAdapter implements AudioCaptureService {
     this.paused = false;
 
     // 订阅 Rust 侧推送的音频块事件
-    this.unlistenAudioChunk = await listen<number[]>('audio-chunk', event => {
+    this.unlistenAudioChunk = await this.eventBus.listen<number[]>('audio-chunk', event => {
       if (!this.capturing || this.paused) return;
 
       const rawData = new Float32Array(event.payload);
@@ -58,11 +77,11 @@ export class TauriAudioCaptureAdapter implements AudioCaptureService {
       this.callbacks.forEach(cb => cb(chunk));
     });
 
-    await invoke('start_audio_capture', {
-      sampleRate: this.config.sampleRate,
-      channels: this.config.channels,
-      chunkDurationMs: this.config.chunkDurationMs,
-    });
+    await this.invoker.startCapture(
+      this.config.sampleRate,
+      this.config.channels,
+      this.config.chunkDurationMs
+    );
   }
 
   async stopCapture(): Promise<void> {
@@ -76,7 +95,7 @@ export class TauriAudioCaptureAdapter implements AudioCaptureService {
       this.unlistenAudioChunk = null;
     }
 
-    await invoke('stop_audio_capture');
+    await this.invoker.stopCapture();
   }
 
   pauseCapture(): Promise<void> {
