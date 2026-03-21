@@ -30,16 +30,25 @@ export interface TauriStoreLoader {
 const STORE_FILE = 'wisflow-config.json';
 const CONFIG_KEY = 'userConfig';
 
+// 默认生产加载器：直接调用 @tauri-apps/plugin-store
+const defaultStoreLoader: TauriStoreLoader = {
+  load: (path, options) => load(path, options) as Promise<TauriStoreInstance>,
+};
+
 /**
  * Tauri 配置仓库
  * 实现 ConfigRepository，使用 @tauri-apps/plugin-store 替代 electron-store。
  * 接受可注入的 TauriStoreLoader，生产时使用默认实现，测试时注入 mock。
  */
 export class TauriStoreConfigRepository implements ConfigRepository {
-  constructor(private readonly _storeLoader?: TauriStoreLoader) {}
+  private readonly storeLoader: TauriStoreLoader;
+
+  constructor(storeLoader: TauriStoreLoader = defaultStoreLoader) {
+    this.storeLoader = storeLoader;
+  }
 
   async load(): Promise<UserConfig | null> {
-    const store = await load(STORE_FILE, { autoSave: false });
+    const store = await this.storeLoader.load(STORE_FILE, { autoSave: false });
     const raw = await store.get<PersistedConfig>(CONFIG_KEY);
     if (!raw) return null;
 
@@ -52,7 +61,7 @@ export class TauriStoreConfigRepository implements ConfigRepository {
   }
 
   async save(config: UserConfig): Promise<void> {
-    const store = await load(STORE_FILE, { autoSave: false });
+    const store = await this.storeLoader.load(STORE_FILE, { autoSave: false });
     const json = config.toJSON();
     await store.set(CONFIG_KEY, {
       shortcut: json.shortcut.toJSON(),
