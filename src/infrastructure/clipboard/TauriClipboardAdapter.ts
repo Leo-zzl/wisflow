@@ -18,21 +18,43 @@ export interface TauriPasteInvoker {
  * 实现 ClipboardPort，使用 Tauri 插件 API 替代 Electron clipboard。
  * 接受可选的依赖注入参数以支持单元测试。
  */
+// 默认生产模块：直接调用 Tauri 插件 API
+const defaultModule: TauriClipboardModule = {
+  readText: () => readText(),
+  writeText: (text: string) => writeText(text),
+};
+
+// 默认生产粘贴命令：通过 Tauri invoke 执行 Rust 侧 simulate_paste
+const defaultPaste: TauriPasteInvoker = {
+  simulatePaste: () => invoke<void>('simulate_paste'),
+};
+
+/**
+ * Tauri 剪贴板适配器
+ * 实现 ClipboardPort，使用 Tauri 插件 API 替代 Electron clipboard。
+ * 接受可注入依赖，生产时使用默认实现，测试时注入 mock。
+ */
 export class TauriClipboardAdapter implements ClipboardPort {
+  private readonly module: TauriClipboardModule;
+  private readonly paste: TauriPasteInvoker;
+
   constructor(
-    private readonly _module?: TauriClipboardModule,
-    private readonly _paste?: TauriPasteInvoker
-  ) {}
+    module: TauriClipboardModule = defaultModule,
+    paste: TauriPasteInvoker = defaultPaste
+  ) {
+    this.module = module;
+    this.paste = paste;
+  }
 
   async readText(): Promise<string> {
-    return await readText();
+    return await this.module.readText();
   }
 
   async writeText(text: string): Promise<void> {
-    await writeText(text);
+    await this.module.writeText(text);
   }
 
   async simulatePaste(): Promise<void> {
-    await invoke('simulate_paste');
+    await this.paste.simulatePaste();
   }
 }
