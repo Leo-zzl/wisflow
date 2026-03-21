@@ -1,5 +1,5 @@
 import { UserConfig } from '../entities/UserConfig';
-import { ConfigRepository } from '../repositories/ConfigRepository';
+import type { ConfigRepository } from '../repositories/ConfigRepository';
 
 export class ConfigService {
   private cache: UserConfig | null = null;

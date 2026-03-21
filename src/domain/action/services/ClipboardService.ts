@@ -1,4 +1,4 @@
-import { ClipboardPort } from '../ports/ClipboardPort';
+import type { ClipboardPort } from '../ports/ClipboardPort';
 import { ClipboardSnapshot } from '../value-objects/ClipboardSnapshot';
 
 export class ClipboardService {

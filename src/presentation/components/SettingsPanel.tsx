@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { UserConfig, PolishStyle } from '@domain/config/entities/UserConfig';
+import { UserConfig } from '@domain/config/entities/UserConfig';
+import type { PolishStyle } from '@domain/config/entities/UserConfig';
 import type { ModifierKey } from '@domain/config/value-objects/ShortcutConfig';
 import { ShortcutConfig } from '@domain/config/value-objects/ShortcutConfig';
 import type { ConfigRepository } from '@domain/config/repositories/ConfigRepository';

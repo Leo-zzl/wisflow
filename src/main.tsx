@@ -1,6 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
+import SettingsApp from './presentation/SettingsApp';
+import MicIndicatorApp from './presentation/MicIndicatorApp';
 
 // Detect which Tauri window we're in
 const windowLabel =
@@ -10,19 +12,17 @@ const windowLabel =
     }
   ).__TAURI_INTERNALS__?.metadata?.currentWindow?.label ?? 'main';
 
-async function bootstrap(): Promise<void> {
+function bootstrap(): void {
   const rootEl = document.getElementById('root');
   if (!rootEl) return;
 
   if (windowLabel === 'mic-indicator') {
-    const { default: MicIndicatorApp } = await import('./presentation/MicIndicatorApp');
     createRoot(rootEl).render(
       <StrictMode>
         <MicIndicatorApp />
       </StrictMode>
     );
   } else {
-    const { default: SettingsApp } = await import('./presentation/SettingsApp');
     createRoot(rootEl).render(
       <StrictMode>
         <SettingsApp />
@@ -31,4 +31,4 @@ async function bootstrap(): Promise<void> {
   }
 }
 
-void bootstrap();
+bootstrap();

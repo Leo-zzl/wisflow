@@ -1,6 +1,6 @@
 import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { invoke } from '@tauri-apps/api/core';
-import { ClipboardPort } from '@domain/action/ports/ClipboardPort';
+import type { ClipboardPort } from '@domain/action/ports/ClipboardPort';
 
 /** 可注入的剪贴板读写接口，便于单元测试 */
 export interface TauriClipboardModule {

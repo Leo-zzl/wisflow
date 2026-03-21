@@ -1,12 +1,9 @@
 import { load } from '@tauri-apps/plugin-store';
-import { ConfigRepository } from '@domain/config/repositories/ConfigRepository';
-import {
-  UserConfig,
-  ModelPolicy,
-  PolishConfig,
-  UIConfig,
-} from '@domain/config/entities/UserConfig';
-import { ShortcutConfig, ShortcutConfigProps } from '@domain/config/value-objects/ShortcutConfig';
+import type { ConfigRepository } from '@domain/config/repositories/ConfigRepository';
+import { UserConfig } from '@domain/config/entities/UserConfig';
+import type { ModelPolicy, PolishConfig, UIConfig } from '@domain/config/entities/UserConfig';
+import { ShortcutConfig } from '@domain/config/value-objects/ShortcutConfig';
+import type { ShortcutConfigProps } from '@domain/config/value-objects/ShortcutConfig';
 
 export interface PersistedConfig {
   shortcut: ShortcutConfigProps;

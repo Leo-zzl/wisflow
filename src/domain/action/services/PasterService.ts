@@ -1,4 +1,4 @@
-import { ClipboardPort } from '../ports/ClipboardPort';
+import type { ClipboardPort } from '../ports/ClipboardPort';
 
 /**
  * PasterService - 增量粘贴服务

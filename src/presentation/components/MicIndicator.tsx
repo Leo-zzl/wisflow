@@ -1,10 +1,11 @@
-import { RecordingStatus } from '../stores/recordingStore';
+import React from 'react';
+import type { RecordingStatus } from '../stores/recordingStore';
 
 interface Props {
   status: RecordingStatus;
 }
 
-export function MicIndicator({ status }: Props) {
+export function MicIndicator({ status }: Props): React.ReactElement {
   const isVisible = status !== 'idle';
   const isRecording = status === 'recording';
 
