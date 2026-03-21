@@ -538,7 +538,7 @@ refactor(voice): 优化语义切分算法
 - [x] Task 9.4: 设置面板 React 组件（主窗口，托盘菜单触发）+ 提交
 - [x] Task 9.5: 应用入口组合（TauriAudioCaptureAdapter + TauriClipboardAdapter）+ 提交
 - [x] Task 9.6: 快捷键冲突检测 + 自动注册 + 提交
-- [ ] Task 9.7: E2E测试 + 提交（待后续迭代）
+- [x] Task 9.7: E2E测试 + 提交（Playwright，8个用例覆盖页面加载/快捷键/润色风格）
 
 ### V2.0 功能（MVP 后迭代）
 
