@@ -59,25 +59,25 @@ describe('TauriAudioCaptureAdapter', () => {
   // ─── startCapture ─────────────────────────────────────────────────────────
 
   describe('startCapture', () => {
-    it('应该调用 invoker.startCapture', async () => {
+    it('开始后应向 Rust 侧发出启动麦克风采集指令', async () => {
       await adapter.startCapture();
 
       expect(invoker.startCapture).toHaveBeenCalledTimes(1);
     });
 
-    it('应该使用默认采样率和声道数调用 invoker', async () => {
+    it('默认以 16kHz 单声道启动麦克风采集', async () => {
       await adapter.startCapture();
 
       expect(invoker.startCapture).toHaveBeenCalledWith(16000, 1, 100);
     });
 
-    it('应该订阅 audio-chunk 事件', async () => {
+    it('启动后应监听来自 Rust 侧的实时音频数据流', async () => {
       await adapter.startCapture();
 
       expect(eventBus.listen).toHaveBeenCalledWith('audio-chunk', expect.any(Function));
     });
 
-    it('重复调用时不应再次 invoke', async () => {
+    it('采集进行中再次调用启动应被忽略，不重复开始', async () => {
       await adapter.startCapture();
       await adapter.startCapture();
 
@@ -94,7 +94,7 @@ describe('TauriAudioCaptureAdapter', () => {
   // ─── stopCapture ──────────────────────────────────────────────────────────
 
   describe('stopCapture', () => {
-    it('应该调用 invoker.stopCapture', async () => {
+    it('停止时应向 Rust 侧发出关闭麦克风指令', async () => {
       await adapter.startCapture();
       await adapter.stopCapture();
 
@@ -108,7 +108,7 @@ describe('TauriAudioCaptureAdapter', () => {
       expect(adapter.isCapturing()).toBe(false);
     });
 
-    it('未开始时调用 stopCapture 不应 invoke', async () => {
+    it('未在采集状态时停止操作应被安全忽略', async () => {
       await adapter.stopCapture();
 
       expect(invoker.stopCapture).not.toHaveBeenCalled();
@@ -118,7 +118,7 @@ describe('TauriAudioCaptureAdapter', () => {
   // ─── onChunk / 音频块分发 ─────────────────────────────────────────────────
 
   describe('onChunk 回调', () => {
-    it('应该将 audio-chunk 事件转发给注册的回调', async () => {
+    it('接收到音频块时应分发给所有已订阅的处理器', async () => {
       const callback = vi.fn();
       adapter.onChunk(callback);
       await adapter.startCapture();
@@ -187,7 +187,7 @@ describe('TauriAudioCaptureAdapter', () => {
   // ─── getConfig ────────────────────────────────────────────────────────────
 
   describe('getConfig', () => {
-    it('应该返回当前配置（默认值）', async () => {
+    it('未指定参数时应反映默认的 16kHz 单声道采集配置', async () => {
       await adapter.startCapture();
 
       const config = adapter.getConfig();

@@ -32,7 +32,7 @@ describe('TauriClipboardAdapter', () => {
   });
 
   describe('readText', () => {
-    it('应该从 Tauri 插件读取剪贴板文本', async () => {
+    it('应读取系统剪贴板的当前文本内容', async () => {
       module = makeModule({ readText: vi.fn().mockResolvedValue('剪贴板内容') });
       adapter = new TauriClipboardAdapter(module, paste);
 
@@ -59,7 +59,7 @@ describe('TauriClipboardAdapter', () => {
   });
 
   describe('writeText', () => {
-    it('应该向 Tauri 插件写入文本', async () => {
+    it('应将文本写入系统剪贴板', async () => {
       await adapter.writeText('写入内容');
 
       expect(module.writeText).toHaveBeenCalledWith('写入内容');
@@ -80,13 +80,13 @@ describe('TauriClipboardAdapter', () => {
   });
 
   describe('simulatePaste', () => {
-    it('应该通过 Tauri invoke 执行粘贴', async () => {
+    it('应将剪贴板内容粘贴到当前活动窗口', async () => {
       await adapter.simulatePaste();
 
       expect(paste.simulatePaste).toHaveBeenCalledTimes(1);
     });
 
-    it('invoke 失败时应该传播错误', async () => {
+    it('粘贴操作失败时应向上层传播错误', async () => {
       paste = makePaste({ simulatePaste: vi.fn().mockRejectedValue(new Error('invoke 失败')) });
       adapter = new TauriClipboardAdapter(module, paste);
 

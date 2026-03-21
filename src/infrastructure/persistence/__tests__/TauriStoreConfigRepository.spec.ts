@@ -43,7 +43,7 @@ describe('TauriStoreConfigRepository', () => {
       expect(result).toBeNull();
     });
 
-    it('应该从 store 中恢复默认配置', async () => {
+    it('应还原已持久化的默认配置（快捷键与润色风格）', async () => {
       const defaultConfig = UserConfig.createDefault();
       const json = defaultConfig.toJSON();
       store = makeStore({
@@ -88,7 +88,7 @@ describe('TauriStoreConfigRepository', () => {
       expect(result!.polish.style).toBe('deep');
     });
 
-    it('每次 load 都应该调用 storeLoader.load', async () => {
+    it('每次加载配置都应从持久化存储读取最新状态', async () => {
       await repository.load();
 
       expect(loader.load).toHaveBeenCalledTimes(1);
@@ -96,7 +96,7 @@ describe('TauriStoreConfigRepository', () => {
   });
 
   describe('save', () => {
-    it('应该将配置序列化后写入 store', async () => {
+    it('应将用户配置完整写入持久化存储', async () => {
       const config = UserConfig.createDefault();
 
       await repository.save(config);
@@ -111,7 +111,7 @@ describe('TauriStoreConfigRepository', () => {
       expect(callArgs[1].polish.style).toBe('light');
     });
 
-    it('保存后应该调用 store.save()', async () => {
+    it('保存配置后应立即将变更刷新到磁盘', async () => {
       const config = UserConfig.createDefault();
 
       await repository.save(config);
