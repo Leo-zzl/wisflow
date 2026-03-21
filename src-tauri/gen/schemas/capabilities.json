@@ -1,0 +1,22 @@
+{
+  "default": {
+    "identifier": "default",
+    "description": "WisFlow default capabilities",
+    "local": true,
+    "windows": ["main", "mic-indicator"],
+    "permissions": [
+      "core:default",
+      "global-shortcut:allow-register",
+      "global-shortcut:allow-unregister",
+      "global-shortcut:allow-is-registered",
+      "clipboard-manager:allow-read-text",
+      "clipboard-manager:allow-write-text",
+      "store:allow-get",
+      "store:allow-set",
+      "store:allow-save",
+      "store:allow-load",
+      "shell:allow-open",
+      "positioner:allow-move-window"
+    ]
+  }
+}
