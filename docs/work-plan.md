@@ -537,7 +537,8 @@ refactor(voice): 优化语义切分算法
 - [x] Task 9.3: 连接 Tauri 快捷键事件 → VoiceInputOrchestrator → 浮标显隐 + 提交
 - [x] Task 9.4: 设置面板 React 组件（主窗口，托盘菜单触发）+ 提交
 - [x] Task 9.5: 应用入口组合（TauriAudioCaptureAdapter + TauriClipboardAdapter）+ 提交
-- [ ] Task 9.6: E2E测试 + 提交（待后续迭代）
+- [x] Task 9.6: 快捷键冲突检测 + 自动注册 + 提交
+- [ ] Task 9.7: E2E测试 + 提交（待后续迭代）
 
 ### V2.0 功能（MVP 后迭代）
 
@@ -744,5 +745,5 @@ npm run format:check
 
 _文档版本: 1.2_
 _创建时间: 2026-03-20_
-_最后更新: 2026-03-21（Phase 9 完成：双窗口 UI 层实现，362 tests passing）_
+_最后更新: 2026-03-21（新增快捷键冲突检测，372 tests passing）_
 _更新周期: 每周回顾更新_
