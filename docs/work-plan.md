@@ -444,13 +444,15 @@ refactor(voice): 优化语义切分算法
 - [x] Phase B: Rust 后端实现
   - `src-tauri/src/lib.rs`：全局快捷键 `Ctrl+Shift+V`（emit `shortcut-pressed/released`）、系统托盘、`simulate_paste` 命令（enigo）
   - `src-tauri/src/audio.rs`：cpal 麦克风采集，`audio` feature 可选（WSL 无 ALSA 时自动降级）
-- [x] Phase C: 替换 TypeScript 适配器
-  - `TauriClipboardAdapter` 替换 `ElectronClipboardAdapter`
-  - `TauriStoreConfigRepository` 替换 `ElectronStoreConfigRepository`
-- [x] Phase D: 新增 `TauriAudioCaptureAdapter`，通过 Tauri event 接收 Rust 推送的 PCM 数据块
+- [x] Phase C: 替换 TypeScript 适配器（TDD 红-绿提交）
+  - `TauriClipboardAdapter`：重构支持依赖注入（`TauriClipboardModule` + `TauriPasteInvoker`），8 个单元测试
+  - `TauriStoreConfigRepository`：重构支持依赖注入（`TauriStoreLoader`），7 个单元测试
+- [x] Phase D: 新增 `TauriAudioCaptureAdapter`（TDD 红-绿提交）
+  - 通过 Tauri event 接收 Rust 推送的 PCM 数据块
+  - 重构支持依赖注入（`TauriEventBus` + `TauriAudioInvoker`），16 个单元测试
 - [x] Phase E: Tauri setup 阶段注册快捷键 + 系统托盘配置
 
-**迁移成果**：安装包 < 10 MB（原 80-120 MB），空闲内存 < 40 MB（原 200-300 MB），304/304 单元测试继续通过。
+**迁移成果**：安装包 < 10 MB（原 80-120 MB），空闲内存 < 40 MB（原 200-300 MB），335/335 单元测试通过（新增 31 个 Tauri 适配器测试）。
 
 **WSL 构建说明**：
 
@@ -633,5 +635,5 @@ npm run format:check
 
 _文档版本: 1.1_
 _创建时间: 2026-03-20_
-_最后更新: 2026-03-21（Phase A-E Tauri 迁移完成）_
+_最后更新: 2026-03-21（Phase A-E TDD 完成，335/335 测试通过，feat/tauri-migration 合并至 main）_
 _更新周期: 每周回顾更新_
