@@ -1,12 +1,12 @@
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
-import {
+import type {
   AudioCaptureService,
   AudioCaptureConfig,
   ChunkCallback,
   UnsubscribeFn,
-  DEFAULT_CAPTURE_CONFIG,
 } from '@domain/voice/services/AudioCaptureService';
+import { DEFAULT_CAPTURE_CONFIG } from '@domain/voice/services/AudioCaptureService';
 import { AudioChunk } from '@domain/voice/value-objects/AudioChunk';
 
 /** 可注入的 Tauri 事件总线接口，便于单元测试 */

@@ -1,4 +1,4 @@
-import { STTStrategy, STTStrategyType } from '@domain/model/ports/STTStrategy';
+import type { STTStrategy, STTStrategyType } from '@domain/model/ports/STTStrategy';
 import { AudioChunk } from '@domain/model/value-objects/AudioChunk';
 import { TranscriptionResult } from '@domain/model/value-objects/TranscriptionResult';
 

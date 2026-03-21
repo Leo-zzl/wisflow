@@ -32,9 +32,11 @@
   "include": [
     "vite.config.ts",
     "vitest.config.ts",
+    "playwright.config.ts",
     "electron/main.ts",
     "tests/**/*.ts",
-    "src/**/__tests__/**/*.ts"
+    "src/**/__tests__/**/*.ts",
+    "e2e/**/*.ts"
   ],
   "exclude": ["node_modules", "dist", "dist-electron"]
 }

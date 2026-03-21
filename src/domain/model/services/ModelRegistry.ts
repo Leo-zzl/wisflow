@@ -1,5 +1,5 @@
-import { ModelPolicyType } from '@domain/config/entities/UserConfig';
-import { STTStrategy, STTStrategyType } from '../ports/STTStrategy';
+import type { ModelPolicyType } from '@domain/config/entities/UserConfig';
+import type { STTStrategy, STTStrategyType } from '../ports/STTStrategy';
 import { AudioChunk } from '../value-objects/AudioChunk';
 import { TranscriptionResult } from '../value-objects/TranscriptionResult';
 

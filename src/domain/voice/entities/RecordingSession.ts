@@ -1,5 +1,6 @@
 import { AudioChunk } from '../value-objects/AudioChunk';
-import { RecordingState, isValidTransition } from '../value-objects/RecordingState';
+import type { RecordingState } from '../value-objects/RecordingState';
+import { isValidTransition } from '../value-objects/RecordingState';
 
 export interface RecordingSessionProps {
   id: string;

@@ -1,4 +1,4 @@
-import { ClipboardPort } from '@domain/action/ports/ClipboardPort';
+import type { ClipboardPort } from '@domain/action/ports/ClipboardPort';
 
 /**
  * 最小化的 Electron clipboard 模块接口，便于测试注入

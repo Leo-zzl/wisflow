@@ -1,6 +1,7 @@
 import { AudioChunk } from '../value-objects/AudioChunk';
 import { VADFrame } from '../value-objects/VADFrame';
-import { SemanticChunk, SemanticChunkTrigger } from '../value-objects/SemanticChunk';
+import { SemanticChunk } from '../value-objects/SemanticChunk';
+import type { SemanticChunkTrigger } from '../value-objects/SemanticChunk';
 
 export interface SemanticChunkDetectorConfig {
   /** 触发语义块的字数阈值，默认 10 字 */
@@ -160,8 +161,7 @@ export class SemanticChunkDetector {
     const merged = this.mergeChunks();
     const sampleRate = this.accumulatedChunks[0].sampleRate;
     const totalDurationMs = this.accumulatedChunks.reduce((s, c) => s + c.durationMs, 0);
-    const estimatedLength =
-      (this.accumulatedSpeechMs / 1000) * this.config.speechRateCharsPerSec;
+    const estimatedLength = (this.accumulatedSpeechMs / 1000) * this.config.speechRateCharsPerSec;
 
     const chunk = new SemanticChunk({
       audioData: merged,
