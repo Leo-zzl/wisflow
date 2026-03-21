@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/schema/acl-manifests/core.json",
   "identifier": "default",
   "description": "WisFlow default capabilities",
-  "windows": ["main"],
+  "windows": ["main", "mic-indicator"],
   "permissions": [
     "core:default",
     "global-shortcut:allow-register",
@@ -14,6 +14,7 @@
     "store:allow-set",
     "store:allow-save",
     "store:allow-load",
-    "shell:allow-open"
+    "shell:allow-open",
+    "positioner:allow-move-window"
   ]
 }

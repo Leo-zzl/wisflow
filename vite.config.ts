@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
@@ -15,6 +16,12 @@ export default defineConfig({
       '@infrastructure': resolve(__dirname, 'src/infrastructure'),
       '@presentation': resolve(__dirname, 'src/presentation'),
     },
+  },
+  test: {
+    globals: true,
+    environmentMatchGlobs: [['src/presentation/**', 'jsdom']],
+    setupFiles: ['./src/test-setup.ts'],
+    include: ['src/**/*.spec.ts', 'src/**/*.spec.tsx'],
   },
   // Vite options tailored for Tauri development and only partially compatible
   // with the Tauri dev server configuration

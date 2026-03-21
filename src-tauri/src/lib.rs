@@ -9,6 +9,7 @@ use tauri::{
     Emitter, Manager,
 };
 use tauri_plugin_global_shortcut::{Code, Modifiers, ShortcutState};
+use tauri_plugin_positioner::{Position, WindowExt};
 
 #[tauri::command]
 async fn simulate_paste() -> Result<(), String> {
@@ -37,6 +38,7 @@ pub fn run() {
     let audio_state = audio::new_audio_state();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_positioner::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_store::Builder::new().build())
@@ -60,6 +62,13 @@ pub fn run() {
                         move |_app, _shortcut, event| {
                             match event.state() {
                                 ShortcutState::Pressed => {
+                                    // 显示麦克风浮标（定位到任务栏正上方居中）
+                                    if let Some(win) =
+                                        app_handle.get_webview_window("mic-indicator")
+                                    {
+                                        let _ = win.move_window(Position::BottomCenter);
+                                        let _ = win.show();
+                                    }
                                     let _ = app_handle.emit("shortcut-pressed", ());
                                 }
                                 ShortcutState::Released => {
@@ -72,18 +81,21 @@ pub fn run() {
                 .map_err(|e| format!("Failed to register shortcut: {e}"))?;
 
             // 配置系统托盘
-            let quit_item = MenuItem::with_id(app, "quit", "退出 WisFlow", true, None::<&str>)?;
-            let show_item = MenuItem::with_id(app, "show", "显示窗口", true, None::<&str>)?;
-            let menu = Menu::with_items(app, &[&show_item, &quit_item])?;
+            let settings_item =
+                MenuItem::with_id(app, "settings", "设置", true, None::<&str>)?;
+            let quit_item =
+                MenuItem::with_id(app, "quit", "退出 WisFlow", true, None::<&str>)?;
+            let menu = Menu::with_items(app, &[&settings_item, &quit_item])?;
 
             let _tray = TrayIconBuilder::new()
+                .icon(app.default_window_icon().unwrap().clone())
                 .menu(&menu)
                 .tooltip("WisFlow - 按 Ctrl+Shift+V 开始录音")
                 .on_menu_event(|app, event| match event.id().as_ref() {
                     "quit" => {
                         app.exit(0);
                     }
-                    "show" => {
+                    "settings" => {
                         if let Some(window) = app.get_webview_window("main") {
                             let _ = window.show();
                             let _ = window.set_focus();
