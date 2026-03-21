@@ -2,32 +2,37 @@
 
 ## 1. 技术选型与框架版本
 
+> **注意**：项目已于 Phase A-E（2026-03-21）完成 Electron → Tauri v2 迁移。
+
 ### 核心框架
 
-| 技术       | 版本  | 说明                      |
-| ---------- | ----- | ------------------------- |
-| Electron   | ^28.x | 桌面应用框架              |
-| React      | ^18.x | UI框架                    |
-| TypeScript | ^5.x  | 类型系统（严格模式）      |
-| Vite       | ^5.x  | 构建工具（electron-vite） |
+| 技术       | 版本  | 说明                                 |
+| ---------- | ----- | ------------------------------------ |
+| Tauri      | ^2.x  | 桌面应用框架（Rust + WebView2）      |
+| React      | ^18.x | UI框架                               |
+| TypeScript | ^5.x  | 类型系统（严格模式）                 |
+| Vite       | ^5.x  | 前端构建工具                         |
+| Rust       | 1.75+ | Tauri 后端：快捷键、剪贴板、音频采集 |
 
 ### 测试与质量
 
 | 技术                   | 版本  | 说明              |
 | ---------------------- | ----- | ----------------- |
-| Vitest                 | ^1.x  | 单元/集成测试框架 |
+| Vitest                 | ^2.x  | 单元/集成测试框架 |
 | Playwright             | ^1.x  | E2E测试框架       |
 | @testing-library/react | ^14.x | React组件测试     |
-| ESLint                 | ^8.x  | 代码检查          |
+| ESLint                 | ^9.x  | 代码检查          |
 | Prettier               | ^3.x  | 代码格式化        |
 
 ### 状态与样式
 
-| 技术           | 版本 | 说明       |
-| -------------- | ---- | ---------- |
-| Zustand        | ^4.x | 状态管理   |
-| Tailwind CSS   | ^3.x | CSS框架    |
-| electron-store | ^8.x | 配置持久化 |
+| 技术                                 | 版本 | 说明                              |
+| ------------------------------------ | ---- | --------------------------------- |
+| Zustand                              | ^4.x | 状态管理                          |
+| Tailwind CSS                         | ^3.x | CSS框架                           |
+| @tauri-apps/plugin-store             | ^2.x | 配置持久化（替代 electron-store） |
+| @tauri-apps/plugin-clipboard-manager | ^2.x | 剪贴板读写                        |
+| @tauri-apps/plugin-global-shortcut   | ^2.x | 全局快捷键监听                    |
 
 ### 语音与AI
 
@@ -368,7 +373,7 @@ refactor(voice): 优化语义切分算法
 
 ### Phase 1: 项目初始化 (2-3天)
 
-- [x] Task 1.1: electron-vite 项目初始化 + Git提交
+- [x] Task 1.1: electron-vite 项目初始化 + Git提交（已迁移至 Tauri v2，见 Phase A-E）
 - [x] Task 1.2: ESLint + Prettier + TypeScript严格模式配置 + 提交
 - [x] Task 1.3: Vitest 测试框架配置 + 提交
 - [x] Task 1.4: Tailwind CSS + Zustand 配置 + 提交
@@ -382,7 +387,7 @@ refactor(voice): 优化语义切分算法
 - [x] Task 2.3: 测试 - ShortcutConfig值对象验证 + 提交
 - [x] Task 2.4: 实现 - ShortcutConfig值对象 + 提交
 - [x] Task 2.5: 测试 - ConfigService持久化 + 提交
-- [x] Task 2.6: 实现 - electron-store适配器 + 提交
+- [x] Task 2.6: 实现 - electron-store适配器 + 提交（已替换为 TauriStoreConfigRepository）
 
 ### Phase 3: 语音领域 - 音频采集 (2-3天)
 
@@ -431,12 +436,34 @@ refactor(voice): 优化语义切分算法
 - [x] Task 8.3: 测试 - VoiceInputOrchestrator切换模式 + 提交
 - [x] Task 8.4: 集成测试 - 完整流程 + 提交
 
+### Phase A-E: Electron → Tauri v2 迁移 ✅ 已完成（2026-03-21）
+
+> 在 Phase 9 UI 开发前完成迁移，避免 UI 开发后的二次改造成本。
+
+- [x] Phase A: 初始化 src-tauri/ 项目结构，更新 package.json / vite.config.ts，删除 electron/ 目录
+- [x] Phase B: Rust 后端实现
+  - `src-tauri/src/lib.rs`：全局快捷键 `Ctrl+Shift+V`（emit `shortcut-pressed/released`）、系统托盘、`simulate_paste` 命令（enigo）
+  - `src-tauri/src/audio.rs`：cpal 麦克风采集，`audio` feature 可选（WSL 无 ALSA 时自动降级）
+- [x] Phase C: 替换 TypeScript 适配器
+  - `TauriClipboardAdapter` 替换 `ElectronClipboardAdapter`
+  - `TauriStoreConfigRepository` 替换 `ElectronStoreConfigRepository`
+- [x] Phase D: 新增 `TauriAudioCaptureAdapter`，通过 Tauri event 接收 Rust 推送的 PCM 数据块
+- [x] Phase E: Tauri setup 阶段注册快捷键 + 系统托盘配置
+
+**迁移成果**：安装包 < 10 MB（原 80-120 MB），空闲内存 < 40 MB（原 200-300 MB），304/304 单元测试继续通过。
+
+**WSL 构建说明**：
+
+- `npm run test:unit` — 直接可用（Vitest，无原生依赖）
+- `cargo check` — 需要先安装：`sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libayatana-appindicator3-dev libasound2-dev`
+- `npm run build` — 在 Windows 上执行（Tauri 生产构建，使用 WebView2，无 GTK 依赖）
+
 ### Phase 9: UI层与集成 (3-4天)
 
-- [ ] Task 9.1: 设置面板UI + 提交
-- [ ] Task 9.2: 录音浮动框UI + 提交
-- [ ] Task 9.3: 系统托盘集成 + 提交
-- [ ] Task 9.4: 全局快捷键集成 + 提交
+- [ ] Task 9.1: 设置面板 React 组件 + 提交
+- [ ] Task 9.2: 录音浮动框 React 组件（400×120，显示录音状态/波形）+ 提交
+- [ ] Task 9.3: 连接 Tauri 快捷键事件 → VoiceInputOrchestrator + 提交
+- [ ] Task 9.4: 应用入口组合（TauriAudioCaptureAdapter + TauriClipboardAdapter）+ 提交
 - [ ] Task 9.5: E2E测试 + 提交
 
 ---
@@ -471,25 +498,33 @@ wisflow/
 │   │   └── dto/
 │   │
 │   ├── infrastructure/            # 基础设施层
-│   │   ├── audio/
+│   │   ├── audio/                # TauriAudioCaptureAdapter
 │   │   ├── stt/
 │   │   ├── llm/
 │   │   ├── platform/
-│   │   └── persistence/
+│   │   ├── clipboard/            # TauriClipboardAdapter
+│   │   └── persistence/          # TauriStoreConfigRepository
 │   │
 │   └── presentation/              # 用户界面层
 │       ├── components/
 │       ├── hooks/
 │       └── stores/
 │
+├── src-tauri/                     # Tauri Rust 后端
+│   ├── src/
+│   │   ├── main.rs               # 程序入口
+│   │   ├── lib.rs                # 快捷键、托盘、simulate_paste
+│   │   └── audio.rs              # cpal 麦克风采集（audio feature）
+│   ├── capabilities/
+│   │   └── default.json          # Tauri v2 权限声明
+│   ├── icons/                    # 应用图标
+│   ├── Cargo.toml                # Rust 依赖
+│   └── tauri.conf.json           # 窗口/托盘/构建配置
+│
 ├── tests/                         # 测试
 │   ├── unit/                     # 单元测试 (与src镜像)
 │   ├── integration/              # 集成测试
 │   └── e2e/                      # E2E测试 (Playwright)
-│
-├── electron/                      # Electron主进程
-│   ├── main/
-│   └── preload/
 │
 └── scripts/                       # 工具脚本
     └── setup-local-whisper.sh    # 安装本地模型
@@ -587,15 +622,16 @@ npm run format:check
 
 ### Phase 9 - UI 层
 
-- **Q7: 录音浮动框是独立 Electron 窗口还是 React 组件？**
-
-  > 建议：独立的 `BrowserWindow`（`alwaysOnTop: true`，无边框），避免与用户当前输入窗口产生焦点竞争。
+- **Q7: 录音浮动框的实现方式？** ✅ 已确认（迁移时确定）
+  **决策**：使用 Tauri 单窗口（`label: "main"`），`alwaysOnTop: true`，无边框，透明背景，初始隐藏（`visible: false`）。
+  快捷键触发时通过 `window.show()` 显示，避免焦点竞争。窗口尺寸固定 400×120。
 
 - **Q8: 设置面板是独立窗口还是主窗口内路由？**
-  > 建议：独立窗口，由托盘图标右键菜单触发打开。
+  > 建议：主窗口内路由（React Router），由托盘菜单「显示窗口」触发。Tauri 多窗口管理较复杂，单窗口路由更简洁。
 
 ---
 
-_文档版本: 1.0_
+_文档版本: 1.1_
 _创建时间: 2026-03-20_
+_最后更新: 2026-03-21（Phase A-E Tauri 迁移完成）_
 _更新周期: 每周回顾更新_
