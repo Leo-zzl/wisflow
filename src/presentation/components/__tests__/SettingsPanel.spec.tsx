@@ -19,31 +19,39 @@ describe('设置面板', () => {
 
       render(<SettingsPanel repo={repo} />);
 
+      // waitFor：等待 useEffect 中的异步加载完成（默认配置与加载结果相同）
       await waitFor(() => {
-        expect(screen.getByText(/Ctrl\+Shift\+V/i)).toBeInTheDocument();
+        expect(screen.getByText('Ctrl+Shift+V')).toBeInTheDocument();
       });
     });
 
-    it('打开设置面板时应显示当前润色风格', async () => {
+    it('打开设置面板时应显示当前润色风格选择器', async () => {
       const repo = makeRepo();
 
       render(<SettingsPanel repo={repo} />);
 
       await waitFor(() => {
-        // 默认为 light（轻度去口水）
-        expect(screen.getByDisplayValue('light')).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: /润色风格/i })).toBeInTheDocument();
       });
     });
 
-    it('配置加载失败时应显示默认配置', async () => {
+    it('润色风格选择器初始值应与配置一致', () => {
+      const repo = makeRepo();
+
+      render(<SettingsPanel repo={repo} />);
+
+      // 初始渲染即使用默认配置，select.value 立即可读
+      expect(screen.getByRole('combobox', { name: /润色风格/i })).toHaveValue('light');
+    });
+
+    it('配置加载失败时应显示默认快捷键', () => {
       const repo = makeRepo();
       (repo.load as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
       render(<SettingsPanel repo={repo} />);
 
-      await waitFor(() => {
-        expect(screen.getByText(/Ctrl\+Shift\+V/i)).toBeInTheDocument();
-      });
+      // 加载失败时 useEffect 不调用 setConfig，保留初始默认值
+      expect(screen.getByText('Ctrl+Shift+V')).toBeInTheDocument();
     });
   });
 
@@ -53,7 +61,6 @@ describe('设置面板', () => {
       const repo = makeRepo();
 
       render(<SettingsPanel repo={repo} />);
-      await waitFor(() => screen.getByDisplayValue('light'));
 
       await user.selectOptions(screen.getByRole('combobox', { name: /润色风格/i }), 'deep');
 
@@ -64,28 +71,25 @@ describe('设置面板', () => {
       });
     });
 
-    it('选择深度精炼风格后下拉框应显示新选择', async () => {
+    it('选择深度精炼风格后选择器应显示新选择', async () => {
       const user = userEvent.setup();
       const repo = makeRepo();
 
       render(<SettingsPanel repo={repo} />);
-      await waitFor(() => screen.getByDisplayValue('light'));
 
       await user.selectOptions(screen.getByRole('combobox', { name: /润色风格/i }), 'deep');
 
-      expect(screen.getByDisplayValue('deep')).toBeInTheDocument();
+      expect(screen.getByRole('combobox', { name: /润色风格/i })).toHaveValue('deep');
     });
   });
 
   describe('界面结构', () => {
-    it('应显示面板标题', async () => {
+    it('应显示面板标题', () => {
       const repo = makeRepo();
 
       render(<SettingsPanel repo={repo} />);
 
-      await waitFor(() => {
-        expect(screen.getByRole('heading', { name: /WisFlow 设置/i })).toBeInTheDocument();
-      });
+      expect(screen.getByRole('heading', { name: /WisFlow 设置/i })).toBeInTheDocument();
     });
   });
 });
