@@ -13,17 +13,27 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "label": "main",
+        "label": "mic-indicator",
         "title": "WisFlow",
-        "width": 400,
-        "height": 120,
+        "width": 80,
+        "height": 80,
         "resizable": false,
         "alwaysOnTop": true,
         "decorations": false,
         "transparent": true,
         "visible": false,
+        "skipTaskbar": true,
+        "focus": false
+      },
+      {
+        "label": "main",
+        "title": "WisFlow 设置",
+        "width": 500,
+        "height": 420,
+        "resizable": false,
+        "visible": false,
         "center": true,
-        "skipTaskbar": true
+        "skipTaskbar": false
       }
     ],
     "trayIcon": {
