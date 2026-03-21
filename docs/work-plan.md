@@ -530,14 +530,14 @@ refactor(voice): 优化语义切分算法
 - `cargo check` — 需要先安装：`sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libayatana-appindicator3-dev libasound2-dev`
 - `npm run build` — 在 Windows 上执行（Tauri 生产构建，使用 WebView2，无 GTK 依赖）
 
-### Phase 9: UI层与集成 (3-4天)
+### Phase 9: UI层与集成 ✅ 已完成（2026-03-21）
 
-- [ ] Task 9.1: 麦克风浮标组件（锈铁红呼吸动画，任务栏正上方）+ 提交
-- [ ] Task 9.2: Tauri 独立小窗口配置（`mic-indicator`，无边框透明，不抢焦点）+ 提交
-- [ ] Task 9.3: 连接 Tauri 快捷键事件 → VoiceInputOrchestrator → 浮标显隐 + 提交
-- [ ] Task 9.4: 设置面板 React 组件（主窗口，托盘菜单触发）+ 提交
-- [ ] Task 9.5: 应用入口组合（TauriAudioCaptureAdapter + TauriClipboardAdapter）+ 提交
-- [ ] Task 9.6: E2E测试 + 提交
+- [x] Task 9.1: 麦克风浮标组件（锈铁红呼吸动画，任务栏正上方）+ 提交
+- [x] Task 9.2: Tauri 独立小窗口配置（`mic-indicator`，无边框透明，不抢焦点）+ 提交
+- [x] Task 9.3: 连接 Tauri 快捷键事件 → VoiceInputOrchestrator → 浮标显隐 + 提交
+- [x] Task 9.4: 设置面板 React 组件（主窗口，托盘菜单触发）+ 提交
+- [x] Task 9.5: 应用入口组合（TauriAudioCaptureAdapter + TauriClipboardAdapter）+ 提交
+- [ ] Task 9.6: E2E测试 + 提交（待后续迭代）
 
 ### V2.0 功能（MVP 后迭代）
 
@@ -744,5 +744,5 @@ npm run format:check
 
 _文档版本: 1.2_
 _创建时间: 2026-03-20_
-_最后更新: 2026-03-21（Phase 9 UI 设计确认：麦克风浮标 + 文字直接上屏方案）_
+_最后更新: 2026-03-21（Phase 9 完成：双窗口 UI 层实现，362 tests passing）_
 _更新周期: 每周回顾更新_
