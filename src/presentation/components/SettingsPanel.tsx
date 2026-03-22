@@ -61,6 +61,18 @@ function parseShortcutString(s: string, mode: TriggerMode): ShortcutConfig {
   return new ShortcutConfig({ triggerKey, modifiers, mode });
 }
 
+// 关闭窗口辅助函数
+function closeWindow(): void {
+  try {
+    // 尝试使用 Tauri API 关闭窗口
+    const win = getCurrentWindow();
+    void win.close();
+  } catch {
+    // 如果不是 Tauri 环境（如浏览器开发），尝试关闭浏览器窗口
+    window.close();
+  }
+}
+
 export function SettingsPanel({ repo = defaultRepo }: Props): React.ReactElement {
   const [config, setConfig] = useState<UserConfig>(UserConfig.createDefault());
   const [activeTab, setActiveTab] = useState<TabKey>('shortcut');
@@ -309,7 +321,7 @@ export function SettingsPanel({ repo = defaultRepo }: Props): React.ReactElement
           <span className="text-[13px] text-gray-500">语音输入设置</span>
         </div>
         <button
-          onClick={() => void getCurrentWindow().close()}
+          onClick={() => void closeWindow()}
           className="p-1 hover:bg-gray-100 rounded transition-colors"
         >
           <Icon name="x" className="w-[18px] h-[18px] text-gray-400" />
@@ -564,7 +576,7 @@ export function SettingsPanel({ repo = defaultRepo }: Props): React.ReactElement
           {/* Footer */}
           <div className="h-16 px-7 flex items-center justify-end gap-3 border-t border-gray-100">
             <button
-              onClick={() => void getCurrentWindow().close()}
+              onClick={() => void closeWindow()}
               className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
             >
               取消
