@@ -107,8 +107,7 @@ use std::sync::{Arc, Mutex};
 
 #[tauri::command]
 pub async fn start_audio_capture(
-    #[cfg(feature = "audio")] app: tauri::AppHandle,
-    #[cfg(not(feature = "audio"))] _app: tauri::AppHandle,
+    app: tauri::AppHandle,
     state: tauri::State<'_, Arc<Mutex<AudioState>>>,
     sample_rate: Option<u32>,
     channels: Option<u16>,
@@ -127,7 +126,7 @@ pub async fn start_audio_capture(
     }
     #[cfg(not(feature = "audio"))]
     {
-        let _ = (sample_rate, channels, chunk_duration_ms);
+        let _ = (app, sample_rate, channels, chunk_duration_ms);
         Err("Audio capture not available in this build (missing 'audio' feature). Install libasound2-dev on Linux.".to_string())
     }
 }
