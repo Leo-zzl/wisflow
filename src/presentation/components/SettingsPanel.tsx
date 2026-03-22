@@ -6,6 +6,7 @@ import { ShortcutConfig } from '@domain/config/value-objects/ShortcutConfig';
 import type { ConfigRepository } from '@domain/config/repositories/ConfigRepository';
 import { TauriStoreConfigRepository } from '@infrastructure/persistence/TauriStoreConfigRepository';
 import { invoke } from '@tauri-apps/api/core';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 
 interface Props {
   repo?: ConfigRepository;
@@ -307,7 +308,10 @@ export function SettingsPanel({ repo = defaultRepo }: Props): React.ReactElement
           <span className="text-gray-300">·</span>
           <span className="text-[13px] text-gray-500">语音输入设置</span>
         </div>
-        <button className="p-1 hover:bg-gray-100 rounded transition-colors">
+        <button
+          onClick={() => void getCurrentWindow().close()}
+          className="p-1 hover:bg-gray-100 rounded transition-colors"
+        >
           <Icon name="x" className="w-[18px] h-[18px] text-gray-400" />
         </button>
       </div>
@@ -559,7 +563,10 @@ export function SettingsPanel({ repo = defaultRepo }: Props): React.ReactElement
 
           {/* Footer */}
           <div className="h-16 px-7 flex items-center justify-end gap-3 border-t border-gray-100">
-            <button className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors">
+            <button
+              onClick={() => void getCurrentWindow().close()}
+              className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
               取消
             </button>
             <button
