@@ -299,7 +299,7 @@ export function SettingsPanel({ repo = defaultRepo }: Props): React.ReactElement
   };
 
   return (
-    <div className="w-[860px] h-[680px] bg-white rounded-[10px] shadow-2xl overflow-hidden flex flex-col font-sans">
+    <div className="w-[860px] h-[680px] bg-white overflow-hidden flex flex-col font-sans">
       {/* Title Bar */}
       <div className="h-14 px-6 flex items-center justify-between border-b border-gray-100">
         <div className="flex items-center gap-2.5">
