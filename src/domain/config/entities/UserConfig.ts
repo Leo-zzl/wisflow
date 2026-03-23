@@ -95,6 +95,16 @@ export class UserConfig {
     });
   }
 
+  updatePolishIntensity(intensity: 1 | 2 | 3 | 4 | 5): UserConfig {
+    if (intensity < 1 || intensity > 5) {
+      throw new Error('润色强度必须在 1-5 之间');
+    }
+    return new UserConfig({
+      ...this.toJSON(),
+      polish: { ...this.polish, intensity },
+    });
+  }
+
   updateModelPolicy(policy: Partial<ModelPolicy>): UserConfig {
     return new UserConfig({
       ...this.toJSON(),
