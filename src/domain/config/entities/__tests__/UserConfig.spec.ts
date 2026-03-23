@@ -49,6 +49,25 @@ describe('UserConfig', () => {
       expect(config.polish.style).toBe('light'); // 原对象不变
     });
 
+    it('应该更新润色强度', () => {
+      const config = UserConfig.createDefault();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      const updated = config.updatePolishIntensity(5);
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      expect(updated.polish.intensity).toBe(5);
+      expect(config.polish.intensity).toBe(3); // 原对象不变
+    });
+
+    it('应该验证润色强度范围', () => {
+      const config = UserConfig.createDefault();
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
+      expect(() => config.updatePolishIntensity(0 as 1)).toThrow();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
+      expect(() => config.updatePolishIntensity(6 as 1)).toThrow();
+    });
+
     it('应该更新快捷键配置', () => {
       const config = UserConfig.createDefault();
       const newShortcut = new ShortcutConfig({
