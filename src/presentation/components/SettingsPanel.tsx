@@ -148,6 +148,30 @@ export function SettingsPanel({ repo = defaultRepo }: Props): React.ReactElement
     setCheckStatus('idle');
   };
 
+  const handleShortcutKeyDown = (e: React.KeyboardEvent<HTMLDivElement>): void => {
+    const MODIFIER_KEYS = ['Control', 'Shift', 'Alt', 'Meta'];
+    if (MODIFIER_KEYS.includes(e.key)) return;
+
+    const modifiers: ModifierKey[] = [];
+    if (e.ctrlKey) modifiers.push('Control');
+    if (e.shiftKey) modifiers.push('Shift');
+    if (e.altKey) modifiers.push('Alt');
+    if (e.metaKey) modifiers.push('Meta');
+
+    const keyLabel = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+    const newShortcutStr = [...modifiers.map(m => MODIFIER_DISPLAY[m]), keyLabel].join('+');
+
+    const newShortcut = new ShortcutConfig({
+      triggerKey: keyLabel,
+      modifiers,
+      mode: config.shortcut.mode,
+    });
+    const updated = config.updateShortcut(newShortcut);
+    setConfig(updated);
+    setPendingShortcut(newShortcutStr);
+    setCheckStatus('idle');
+  };
+
   const handleModeChange = (mode: TriggerMode): void => {
     const newShortcut = new ShortcutConfig({
       triggerKey: config.shortcut.triggerKey,
@@ -458,6 +482,19 @@ export function SettingsPanel({ repo = defaultRepo }: Props): React.ReactElement
                   </div>
                 </div>
 
+                {/* Shortcut Capture Area */}
+                <div className="bg-[#FAFAFA] rounded-[10px] p-5 border border-gray-200 flex flex-col gap-3">
+                  <span className="text-[13px] text-gray-600">或者直接按下快捷键</span>
+                  <div
+                    data-testid="shortcut-capture-area"
+                    tabIndex={0}
+                    onKeyDown={handleShortcutKeyDown}
+                    className="flex items-center justify-center h-10 rounded-md border border-dashed border-gray-300 focus:border-[#B7410E] focus:outline-none text-sm font-mono text-gray-700 cursor-pointer"
+                  >
+                    <span data-testid="shortcut-display">{shortcutLabel}</span>
+                  </div>
+                </div>
+
                 {/* Conflict Card */}
                 <div className="bg-[#FAFAFA] rounded-[10px] p-5 border border-gray-200 flex flex-col gap-4">
                   <div className="flex items-center gap-2.5">
@@ -466,26 +503,36 @@ export function SettingsPanel({ repo = defaultRepo }: Props): React.ReactElement
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        checkStatus === 'conflict'
-                          ? 'bg-amber-500'
-                          : checkStatus === 'ok'
-                            ? 'bg-green-500'
-                            : 'bg-green-500'
-                      }`}
-                    />
-                    <span
-                      className={`text-[13px] font-medium ${
-                        checkStatus === 'conflict' ? 'text-amber-700' : 'text-green-700'
-                      }`}
-                    >
-                      {checkStatus === 'checking'
-                        ? '检测中...'
-                        : checkStatus === 'conflict'
-                          ? '检测到冲突'
-                          : '未检测到冲突'}
-                    </span>
+                    {checkStatus === 'checking' && (
+                      <span
+                        data-testid="shortcut-checking"
+                        className="text-[13px] font-medium text-gray-500"
+                      >
+                        检测中...
+                      </span>
+                    )}
+                    {checkStatus === 'conflict' && (
+                      <>
+                        <span className="w-2 h-2 rounded-full bg-amber-500" />
+                        <span
+                          data-testid="shortcut-conflict"
+                          className="text-[13px] font-medium text-amber-700"
+                        >
+                          检测到冲突
+                        </span>
+                      </>
+                    )}
+                    {(checkStatus === 'ok' || checkStatus === 'idle') && (
+                      <>
+                        <span className="w-2 h-2 rounded-full bg-green-500" />
+                        <span
+                          data-testid="shortcut-ok"
+                          className="text-[13px] font-medium text-green-700"
+                        >
+                          未检测到冲突
+                        </span>
+                      </>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -529,6 +576,7 @@ export function SettingsPanel({ repo = defaultRepo }: Props): React.ReactElement
                     return (
                       <button
                         key={style}
+                        data-testid={isSelected ? 'polish-style-selected' : undefined}
                         onClick={() => handlePolishStyleChange(style)}
                         className={`flex items-center justify-between px-4 py-3 rounded-lg border text-left transition-colors ${
                           isSelected
