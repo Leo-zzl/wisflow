@@ -13,11 +13,15 @@ describe('PolishStyle', () => {
       expect(POLISH_STYLES).toContain('light');
       expect(POLISH_STYLES).toContain('deep');
       expect(POLISH_STYLES).toContain('condensed');
+      expect(POLISH_STYLES).toContain('formal');
+      expect(POLISH_STYLES).toContain('business');
+      expect(POLISH_STYLES).toContain('technical');
+      expect(POLISH_STYLES).toContain('humorous');
       expect(POLISH_STYLES).toContain('custom');
     });
 
-    it('共有 5 种润色风格', () => {
-      expect(POLISH_STYLES).toHaveLength(5);
+    it('共有 9 种润色风格', () => {
+      expect(POLISH_STYLES).toHaveLength(9);
     });
   });
 
@@ -33,13 +37,27 @@ describe('PolishStyle', () => {
       expect(POLISH_STYLE_LABELS.light).toBe('轻度润色');
       expect(POLISH_STYLE_LABELS.deep).toBe('深度润色');
       expect(POLISH_STYLE_LABELS.condensed).toBe('精简压缩');
+      expect(POLISH_STYLE_LABELS.formal).toBe('正式规范');
+      expect(POLISH_STYLE_LABELS.business).toBe('商务专业');
+      expect(POLISH_STYLE_LABELS.technical).toBe('技术文档');
+      expect(POLISH_STYLE_LABELS.humorous).toBe('轻松幽默');
       expect(POLISH_STYLE_LABELS.custom).toBe('自定义');
     });
   });
 
   describe('isValidPolishStyle', () => {
     it('有效风格应返回 true', () => {
-      const validStyles: PolishStyle[] = ['colloquial', 'light', 'deep', 'condensed', 'custom'];
+      const validStyles: PolishStyle[] = [
+        'colloquial',
+        'light',
+        'deep',
+        'condensed',
+        'formal',
+        'business',
+        'technical',
+        'humorous',
+        'custom',
+      ];
       for (const style of validStyles) {
         expect(isValidPolishStyle(style)).toBe(true);
       }
@@ -47,7 +65,6 @@ describe('PolishStyle', () => {
 
     it('无效字符串应返回 false', () => {
       expect(isValidPolishStyle('invalid')).toBe(false);
-      expect(isValidPolishStyle('formal')).toBe(false);
       expect(isValidPolishStyle('')).toBe(false);
     });
 
